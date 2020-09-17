@@ -2,44 +2,73 @@
 Simple graph implementation
 """
 from util import Stack, Queue  # These may come in handy
+from collections import deque
+
 
 class Graph:
 
     """Represent a graph as a dictionary of vertices mapping labels to edges."""
+
     def __init__(self):
         self.vertices = {}
+
+    def __repr__(self):
+        return str(self.vertices)
 
     def add_vertex(self, vertex_id):
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        if vertex_id not in self.vertices:
+            self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        if v1 in self.vertices and v2 in self.vertices:
+            self.vertices[v1].add(v2)
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        if vertex_id in self.vertices:
+            return self.vertices[vertex_id]
+        else:
+            return set()
 
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        queue = deque()
+        queue.append(starting_vertex)
+        visited = set()
+        while len(queue) > 0:
+            currNode = queue.popleft()
+            if currNode not in visited:
+                visited.add(currNode)
+                # print(currNode)
+                for neighbor in self.get_neighbors(currNode):
+                    queue.append(neighbor)
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        stack = deque()
+        stack.append(starting_vertex)
+        visited = set()
+        while len(stack) > 0:
+            currNode = stack.pop()
+            if currNode not in visited:
+                visited.add(currNode)
+                # print(currNode)
+                for edge in self.get_neighbors(currNode):
+                    stack.append(edge)
 
     def dft_recursive(self, starting_vertex):
         """
@@ -56,7 +85,23 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        queue = deque()
+
+        queue.append([starting_vertex])
+        visited = set()
+        while len(queue) > 0:
+            currPath = queue.popleft()  # [1,2,3]
+            currNode = currPath[-1]  # 3
+            if currNode == destination_vertex:
+                return currPath
+            if currNode not in visited:
+                visited.add(currNode)
+                # print(currNode)
+                for neighbor in self.get_neighbors(currNode):
+                    # stack.append(neighbor)
+                    newPath = list(currPath)
+                    newPath.append(neighbor)
+                    queue.append(newPath)
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -64,7 +109,23 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        stack = deque()
+
+        stack.append([starting_vertex])
+        visited = set()
+        while len(stack) > 0:
+            currPath = stack.pop()
+            currNode = currPath[-1]
+            if currNode == destination_vertex:
+                return currPath
+            if currNode not in visited:
+                visited.add(currNode)
+                # print(currNode)
+                for neighbor in self.get_neighbors(currNode):
+                    # stack.append(neighbor)
+                    newPath = list(currPath)
+                    newPath.append(neighbor)
+                    stack.append(newPath)
 
     def dfs_recursive(self, starting_vertex, destination_vertex):
         """
@@ -75,6 +136,7 @@ class Graph:
         This should be done using recursion.
         """
         pass  # TODO
+
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
