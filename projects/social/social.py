@@ -1,6 +1,13 @@
+from collections import deque
+import math
+import time
+import random
+
+
 class User:
     def __init__(self, name):
         self.name = name
+
 
 class SocialGraph:
     def __init__(self):
@@ -24,7 +31,7 @@ class SocialGraph:
         """
         Create a new user with a sequential integer ID
         """
-        self.last_id += 1  # automatically increment the ID to assign the new user
+        self.last_id += 1
         self.users[self.last_id] = User(name)
         self.friendships[self.last_id] = set()
 
@@ -43,10 +50,20 @@ class SocialGraph:
         self.users = {}
         self.friendships = {}
         # !!!! IMPLEMENT ME
+        for i in range(0, num_users):
+            self.add_user(f"User {i}")
+        possible_friendships = []
 
-        # Add users
+        for user_id in self.users:
 
-        # Create friendships
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friendships.append((user_id, friend_id))
+
+        random.shuffle(possible_friendships)
+
+        for i in range(0, math.floor(num_users * avg_friendships / 2)):
+            friendship = possible_friendships[i]
+            self.add_friendship(friendship[0], friendship[1])
 
     def get_all_social_paths(self, user_id):
         """
@@ -57,8 +74,19 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        visited = {}
+        queue = deque()
+        queue.append([user_id])
+        while len(queue) > 0:
+            currPath = queue.popleft()
+            currNode = currPath[-1]
+
+            visited[currNode] = currPath
+            for friend in self.friendships[currNode]:
+                if friend not in visited:
+                    newPath = currPath.copy()
+                    newPath.append(friend)
+                    queue.append(newPath)
         return visited
 
 
